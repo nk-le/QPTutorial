@@ -62,4 +62,6 @@ Using QP requires
 # Warning
   WARNING: the .pio contains the included path --> new project might not be able to compile
 
- 
+User should declare this function itself
+ void QS::onCommand(unsigned char cmdId,
+					unsigned long param1, unsigned long param2, unsigned long param3)

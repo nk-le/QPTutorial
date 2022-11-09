@@ -10,7 +10,7 @@ using namespace QP;
 #ifdef Q_SPY
 
 namespace QSPY_CONFIG{
-    extern HardwareSerial& QS_PORT;
+    extern Stream& QS_PORT;
     extern int QS_BAUD;
 };
 

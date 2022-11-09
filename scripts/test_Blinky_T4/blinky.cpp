@@ -19,9 +19,8 @@
 #include "qpcpp.hpp"  // QP/C++ framework API
 #include "blinky.hpp" // Blinky application
 #include "bsp.hpp"    // Board Support Package interface
-#include <Arduino.h>
 
-using namespace QP;
+//using namespace QP;
 
 // ask QM to declare the Blinky class ----------------------------------------
 //.$declare${AOs::Blinky} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -75,8 +74,8 @@ Q_STATE_DEF(Blinky, initial) {
 
     // arm the private time event to expire in 1/2s
     // and periodically every 1/2 second
-    QP::QTimeEvtCtr nTicks = BSP::TICKS_PER_SEC / 2;
-    m_timeEvt.armX(nTicks, nTicks);
+    m_timeEvt.armX(BSP::TICKS_PER_SEC/2,
+                   BSP::TICKS_PER_SEC/2);
     (void)e; // unused parameter
 
     QS_FUN_DICTIONARY(&Blinky::off);
