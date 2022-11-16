@@ -3,7 +3,7 @@
 
 using namespace QP;
 
-enum BlinkySignals {
+enum SensorSignals {
     DUMMY_SIG = QP::Q_USER_SIG,
     MAX_PUB_SIG,          // the last published signal
 
