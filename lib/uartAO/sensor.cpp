@@ -30,6 +30,7 @@ bool Sensor::setup(){
     QS_OBJ_DICTIONARY(&dutSensor);
     QS_OBJ_DICTIONARY(&dutSensor.m_timeEvt);
     QS_OBJ_DICTIONARY(&dutSensor.m_samplingTimerEvt);
+    QS_FUN_DICTIONARY(&dutSensor.testProbe);
 
     QS_BEGIN_ID(RecordID::LOG_INFO, this->getPrio())
         QS_OBJ(this);
@@ -39,7 +40,7 @@ bool Sensor::setup(){
 }
 
 bool Sensor::testConnection(){
-    delay(500); // You can use some delay here as well
+    delay(200); // You can use some delay here as well
     // For example: sending a sync request to SFU and expect to receive a confirmation!
     uint8_t rxBuf[12] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA};
 
@@ -52,7 +53,7 @@ bool Sensor::testConnection(){
 
 
 bool Sensor::testParsing(){
-    delay(500);
+    delay(200);
     // For example: sending a sync request to SFU and expect to receive a confirmation!
     uint8_t rxBuf[12] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA};
 
@@ -70,7 +71,7 @@ bool Sensor::testParsing(){
 
 bool Sensor::testProbe(){
     QS_TEST_PROBE_DEF(&Sensor::testProbe)
-    QS_TEST_PROBE_ID(100,        
+    QS_TEST_PROBE(        
         this->testConnection();
     )
 }

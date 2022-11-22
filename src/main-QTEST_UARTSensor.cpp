@@ -75,7 +75,57 @@ void QS::onTestTeardown(void) {
 void QS::onCommand(std::uint8_t cmdId,
          std::uint32_t param1, std::uint32_t param2, std::uint32_t param3)
 {
+    (void)param1;
+    (void)param2;
+    (void)param3;
 
+    switch (cmdId) {
+        case COMMAND_A: {
+            Q_ASSERT_ID(100, param1 != 0U);
+            QS_BEGIN_ID(COMMAND_A, 0U) // app-specific record
+                QS_U32(0, param1);
+            QS_END()
+            break;
+        }
+        case COMMAND_B: {
+            QS_BEGIN_ID(COMMAND_B, 0U) // app-specific record
+                QS_U8(0, param1);
+                QS_STR("BAR");
+                QS_U16(0, param2);
+                QS_STR("FOO");
+                QS_U32(0, param3);
+                QS_F64(param1, -6.02214076E23);
+            QS_END()
+            break;
+        }
+        case COMMAND_X: {
+            uint32_t x = dutSensor.testProbe();
+            QS_BEGIN_ID(COMMAND_X, 0U) // app-specific record
+                QS_U32(0, x);
+                // ...
+            QS_END()
+            break;
+        }
+        case COMMAND_Y: {
+            QS_BEGIN_ID(COMMAND_Y, 0U) // application-specific record
+                QS_FUN(&myFun);
+                QS_MEM(buffer, param1);
+                QS_STR((char const *)&buffer[33]);
+            QS_END()
+            break;
+        }
+        case COMMAND_Z: {
+            float32_t f32 = (float32_t)((int32_t)param2/(float32_t)param3);
+            float64_t f64 = -6.02214076E23;
+            QS_BEGIN_ID(COMMAND_Z, 0U) /* app-specific record */
+                QS_F32(param1, f32);
+                QS_F64(param1, f64);
+            QS_END()
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 

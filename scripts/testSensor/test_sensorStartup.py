@@ -18,7 +18,21 @@ def on_reset():
     # Program running
     expect_run()
 
+def on_setup ():
+    expect("@timestamp CommandID::FIXTURE_SETUP")
+
+def on_teardown():
+    expect("@timestamp CommandID::FIXTURE_TEARDOWN")
+
+
 # tests...
 test("Assert 0")
-expect("@timestamp CommandID::FIXTURE_SETUP")
-expect("@timestamp CommandID::FIXTURE_TEARDOWN")
+
+ao_filter("dutSensor")
+
+probe("dutSensor.testProbe", 200033)
+command("CommandID::COMMAND_X")
+expect("@timestamp TstProbe Fun=dutSensor.testProbe,Data=200033")
+expect("@timestamp RecordID::LOG_INFO dutSensor Request Sample SFU  00 11 22 33 44 55 66 77 88 99 AA 00")
+expect("@timestamp CommandID::COMMAND_X 0")
+expect("@timestamp Trg-Done QS_RX_COMMAND")
