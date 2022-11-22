@@ -3,6 +3,8 @@
 #include "sensor.h" // Sensor application
 #include <bsp.hpp>
 
+#include <QDefines.h>
+
 using namespace QP;
 
 //. Check for the minimum required QP version
@@ -19,13 +21,73 @@ Sensor::Sensor()
   : QActive(&initial),
     m_timeEvt(this, TIMEOUT_SIG, 0U),
     m_samplingTimerEvt(this, SAMPLING_SIG, 0U)
-{}
+{
+    
+}
 
-//.${AOs::Sensor::SM} ........................................................
-Q_STATE_DEF(Sensor, initial) {
+
+bool Sensor::setup(){
     QS_OBJ_DICTIONARY(&dutSensor);
     QS_OBJ_DICTIONARY(&dutSensor.m_timeEvt);
     QS_OBJ_DICTIONARY(&dutSensor.m_samplingTimerEvt);
+
+    QS_BEGIN_ID(RecordID::LOG_INFO, this->getPrio())
+        QS_OBJ(this);
+        QS_STR("Check Sensor ID");
+        QS_STR("Firmware 0.1234");
+    QS_END()
+}
+
+bool Sensor::testConnection(){
+    delay(500); // You can use some delay here as well
+    // For example: sending a sync request to SFU and expect to receive a confirmation!
+    uint8_t rxBuf[12] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA};
+
+    QS_BEGIN_ID(RecordID::LOG_INFO, this->getPrio())
+        QS_OBJ(this);
+        QS_STR("Request Sample SFU");
+        QS_MEM(rxBuf, sizeof(rxBuf));
+    QS_END()
+}
+
+
+bool Sensor::testParsing(){
+    delay(500);
+    // For example: sending a sync request to SFU and expect to receive a confirmation!
+    uint8_t rxBuf[12] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA};
+
+    QS_BEGIN_ID(RecordID::LOG_INFO, this->getPrio())
+        QS_OBJ(this);
+        QS_STR("Parse Bytes arr:");
+        QS_MEM(rxBuf, sizeof(rxBuf));
+        QS_STR("Result");
+        QS_U64(0, 32003033); // Fake timestamp
+        QS_U8(0, 122);
+        QS_F64(0, 9.8299291);
+        QS_F64(0, 4.2);
+    QS_END()
+}
+
+bool Sensor::testProbe(){
+    QS_TEST_PROBE_DEF(&Sensor::testProbe)
+    QS_TEST_PROBE_ID(100,        
+        this->testConnection();
+    )
+}
+
+
+bool Sensor::parse(uint8_t* rxBytes, uint8_t len){
+    // Checksum
+
+    // Casting
+
+    // Return
+    return true;
+}
+
+//.${AOs::Sensor::SM} ........................................................
+Q_STATE_DEF(Sensor, initial) {
+    
 
     // arm the private time event to expire in 1/2s
     // and periodically every 1/2 second

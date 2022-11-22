@@ -23,10 +23,19 @@ public:
 public:
     Sensor();
 
+    bool setup();
+    bool testConnection();
+    bool testParsing();
+    bool testProbe();
+
 protected:
     Q_STATE_DECL(initial);
     Q_STATE_DECL(off);
     Q_STATE_DECL(on);
+
+
+    bool parse(uint8_t* rxBytes, uint8_t len);
+
 };
 
 extern Sensor dutSensor;

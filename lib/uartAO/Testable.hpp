@@ -1,29 +1,29 @@
-#pragma once 
-#include "Arduino.h"
-#include "qpcpp.hpp"
+// #pragma once 
+// #include "Arduino.h"
+// #include "qpcpp.hpp"
 
-using namespace QP;
+// using namespace QP;
 
-class Testable {
-public:
+// class Testable {
+// public:
 
-    Testable();
+//     Testable();
 
-    virtual void testStartup();
-    virtual void testRun();
-    virtual void testClose();   
+//     virtual void testStartup();
+//     virtual void testRun();
+//     virtual void testClose();   
 
-private:
-
-
-protected:
-    virtual uint16_t getAOprio(){
-
-    };
+// private:
 
 
-    virtual uint32_t testProbe();
+// protected:
+//     virtual uint16_t getAOprio(){
+
+//     };
 
 
-};
+//     virtual void testProbe();
+
+
+// };
 
