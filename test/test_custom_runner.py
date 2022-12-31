@@ -47,11 +47,12 @@ class CustomTestRunner(TestRunnerBase):
         test_name = self.test_suite.test_name
 
         # find python files starting with "test_" in the directory of the current test.
-        files = glob.glob(os.path.join(test_dir, test_name, "test_*.py"))
+        files = glob.glob(os.path.join(test_dir, test_name, "test*.py"))
         if(self.options.verbose):
             click.secho("Found the following test files: {}".format(files), fg='green')
         fileListString = ' '.join(files)
-
+        test_script_format = os.path.join(test_dir, test_name, "test*.py")
+        click.secho(test_script_format,  fg='green')
         # Find test scripts, run qutest and connect to the qspy process on the default port.  
         thisPath = os.path.dirname(os.path.realpath(__file__))
         qutest_path = os.path.join(thisPath, 'qutest.py') 
@@ -60,7 +61,12 @@ class CustomTestRunner(TestRunnerBase):
         # qutest will write its output to PIPE, that we can read periodically.
         # However, since the reading is blocking, we will delegate that to another thread, from where the output
         # will be processed.
-        self.qutest_process = Popen(['python', '-u', qutest_path, fileListString], stdout=PIPE, stderr=PIPE, universal_newlines=True)
+
+        # TODO: there is some conflict when I try to call the qutest command by this line.
+        # Check this https://www.state-machine.com/qtools/qutest_use.html#qutest_command
+        self.qutest_process = Popen(['python', '-u', qutest_path, test_script_format], stdout=PIPE, stderr=PIPE, universal_newlines=True)
+        #self.qutest_process = Popen(['python', qutest_path, fileListString, "''", "localhost:7701"], stdout=PIPE, stderr=PIPE, universal_newlines=True)
+
         sleep(0.1)
 
         
