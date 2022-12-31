@@ -1,0 +1,92 @@
+QSPY 7.0.0 Copyright (c) 2005-2022 Quantum Leaps
+Documentation: https://www.state-machine.com/qtools/qspy.html
+Current timestamp: 221231_095018
+   <F-END> Attached Chan=00000010
+########## Trg-RST  QP-Ver=700,Build=221230_134041
+           Obj-Dict 0x20001A04->QS_RX
+           Obj-Dict 0x200002AC->l_TIMER_ID
+           Fun-Dict 0x000033C9->ledOff
+           Fun-Dict 0x00003435->ledOn
+           Fun-Dict 0x0000008D->QHsm::top
+           Usr-Dict 00000100->LED
+           Sig-Dict 00000006,Obj=0x00000000->TIMEOUT_SIG
+           TstPause
+           Trg-Ack  QS_RX_GLB_FILTER
+           Trg-Ack  QS_RX_TEST_CONTINUE
+           Obj-Dict 0x20001A38->EvtPool1
+           Obj-Dict 0x20001B54->Blinky::inst
+           Obj-Dict 0x20001B74->Blinky::inst.m_timeEvt
+0000000001 TE0-Arm  Obj=Blinky::inst.m_timeEvt,AO=Blinky::inst,Tim=50,Int=50
+           Fun-Dict 0x00003369->Blinky::off
+           Fun-Dict 0x000033A1->Blinky::on
+===RTC===> St-Init  Obj=Blinky::inst,State=QHsm::top->Blinky::off
+0000000002 LED 0
+===RTC===> St-Entry Obj=Blinky::inst,State=Blinky::off
+0000000003 Init===> Obj=Blinky::inst,State=Blinky::off
+           Fun-Dict 0x0000008D->QHsm::top
+           Fun-Dict 0x00003435->BSP::ledOn
+           Fun-Dict 0x000033C9->BSP::ledOff
+           Sig-Dict 00000006,Obj=0x20001B54->TIMEOUT_SIG
+           Fun-Dict 0x00000020->QActive::post_
+           Fun-Dict 0x00000024->QActive::postLIFO
+           Fun-Dict 0x00002EC5->QS::processTestEvts_
+           QF_RUN
+           Trg-Ack  QS_RX_CURR_OBJ
+           Trg-Ack  QS_RX_TEST_SETUP
+           Trg-ERR  QS_RX_AO_FILTER
+########## Trg-RST  QP-Ver=700,Build=221230_134041
+           Obj-Dict 0x20001A04->QS_RX
+           Obj-Dict 0x200002AC->l_TIMER_ID
+           Fun-Dict 0x000033C9->ledOff
+           Fun-Dict 0x00003435->ledOn
+           Fun-Dict 0x0000008D->QHsm::top
+           Usr-Dict 00000100->LED
+           Sig-Dict 00000006,Obj=0x00000000->TIMEOUT_SIG
+           TstPause
+           Trg-Ack  QS_RX_GLB_FILTER
+           Trg-Ack  QS_RX_TEST_CONTINUE
+           Obj-Dict 0x20001A38->EvtPool1
+           Obj-Dict 0x20001B54->Blinky::inst
+           Obj-Dict 0x20001B74->Blinky::inst.m_timeEvt
+0000000001 TE0-Arm  Obj=Blinky::inst.m_timeEvt,AO=Blinky::inst,Tim=50,Int=50
+           Fun-Dict 0x00003369->Blinky::off
+           Fun-Dict 0x000033A1->Blinky::on
+===RTC===> St-Init  Obj=Blinky::inst,State=QHsm::top->Blinky::off
+0000000002 LED 0
+===RTC===> St-Entry Obj=Blinky::inst,State=Blinky::off
+0000000003 Init===> Obj=Blinky::inst,State=Blinky::off
+           Fun-Dict 0x0000008D->QHsm::top
+           Fun-Dict 0x00003435->BSP::ledOn
+           Fun-Dict 0x000033C9->BSP::ledOff
+           Sig-Dict 00000006,Obj=0x20001B54->TIMEOUT_SIG
+           Fun-Dict 0x00000020->QActive::post_
+           Fun-Dict 0x00000024->QActive::postLIFO
+           Fun-Dict 0x00002EC5->QS::processTestEvts_
+           QF_RUN
+           Trg-Ack  QS_RX_CURR_OBJ
+           Trg-Ack  QS_RX_TEST_SETUP
+           Trg-Ack  QS_RX_CURR_OBJ
+           Trg-Ack  QS_RX_TICK
+           Tick<0>  Ctr=0000000001
+0000000001 TE0-Post Obj=Blinky::inst.m_timeEvt,Sig=TIMEOUT_SIG,AO=Blinky::inst
+0000000002 AO-Post  Sdr=QS_RX,Obj=Blinky::inst,Evt<Sig=TIMEOUT_SIG,Pool=0,Ref=128>,Que<Free=10,Min=10>
+0000000003 AO-GetL  Obj=Blinky::inst,Evt<Sig=TIMEOUT_SIG,Pool=0,Ref=128>
+0000000004 Disp===> Obj=Blinky::inst,Sig=TIMEOUT_SIG,State=Blinky::off
+0000000005 LED 1
+===RTC===> St-Entry Obj=Blinky::inst,State=Blinky::on
+0000000006 ===>Tran Obj=Blinky::inst,Sig=TIMEOUT_SIG,State=Blinky::off->Blinky::on
+0000000007 Trg-Done QS_RX_TICK
+           Trg-Ack  QS_RX_TEST_TEARDOWN
+           Trg-Ack  QS_RX_TEST_SETUP
+           Trg-Ack  QS_RX_TICK
+           Tick<0>  Ctr=0000000002
+0000000001 TE0-Post Obj=Blinky::inst.m_timeEvt,Sig=TIMEOUT_SIG,AO=Blinky::inst
+0000000002 AO-Post  Sdr=QS_RX,Obj=Blinky::inst,Evt<Sig=TIMEOUT_SIG,Pool=0,Ref=128>,Que<Free=10,Min=10>
+0000000003 AO-GetL  Obj=Blinky::inst,Evt<Sig=TIMEOUT_SIG,Pool=0,Ref=128>
+0000000004 Disp===> Obj=Blinky::inst,Sig=TIMEOUT_SIG,State=Blinky::on
+0000000005 LED 0
+===RTC===> St-Entry Obj=Blinky::inst,State=Blinky::off
+0000000006 ===>Tran Obj=Blinky::inst,Sig=TIMEOUT_SIG,State=Blinky::on->Blinky::off
+0000000007 Trg-Done QS_RX_TICK
+           Trg-Ack  QS_RX_TEST_TEARDOWN
+   <F-END> Detached ######################################

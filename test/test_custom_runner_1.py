@@ -20,7 +20,8 @@ import glob
 import re
 
 class CustomTestRunner(TestRunnerBase):
-
+    #def __init__(self, mcuSerialPort = COM_PORT, qspyTCPPort = Q_SPY_PORT, hostAddr = HOST) -> None:
+    #    super().__init__(mcuSerialPort, qspyTCPPort, hostAddr)
 
     TESTCASE_PARSE_REGEX = re.compile(
         r"\s?(?P<name>[\w\->:() ]+): (?P<status>FAIL|PASS) \((?P<duration>[^\)]+(?=s))"
@@ -29,16 +30,24 @@ class CustomTestRunner(TestRunnerBase):
     def stage_uploading(self):
         return super().stage_uploading()
 
+    def start_qspyrelay(self):
+        click.secho("Opening QRELAY session...")
+        # Find test scripts, run qutest and connect to the qspy process on the default port.  
+        thisPath = os.path.dirname(os.path.realpath(__file__))
+        qrelayPath = os.path.join(thisPath, 'qrelay.py') 
+
+        self.qutest_process = Popen(['python', qrelayPath, "COM8", "5501"], stdout=PIPE, stderr=PIPE, universal_newlines=True)
+        sleep(0.1)
 
     def start_qspy(self):
         # launch a QSPY process that is opened in a dedicated shell
         click.secho("Opening QSPY session...")
         # self.qspy_process = Popen('qspy', creationflags=CREATE_NEW_CONSOLE)
-        self.qspy_process = Popen('qspy', creationflags=CREATE_NEW_CONSOLE, stdin=PIPE)
+        self.qspy_process = Popen(['qspy', '-t 5501', '-u 6601'], creationflags=CREATE_NEW_CONSOLE, stdin=PIPE)
 
         click.echo("TestRunner connecting to qspy on port 6601")
         self.qspy_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.qspy_socket.connect(('localhost', 6601))
+        self.qspy_socket.connect(('localhost', 5501))
 
 
     def start_qutest(self):
@@ -60,14 +69,17 @@ class CustomTestRunner(TestRunnerBase):
         # qutest will write its output to PIPE, that we can read periodically.
         # However, since the reading is blocking, we will delegate that to another thread, from where the output
         # will be processed.
-        self.qutest_process = Popen(['python', '-u', qutest_path, fileListString], stdout=PIPE, stderr=PIPE, universal_newlines=True)
+        self.qutest_process = Popen(['python', qutest_path, fileListString, "''", "localhost:6601"], stdout=PIPE, stderr=PIPE, universal_newlines=True)
         sleep(0.1)
 
-        
+        # # Start polling
+        self.qutest_polling_thread = threading.Thread(group=None, name="qutestPolling", target=self.qutest_polling_loop)
+        self.qutest_polling_thread.start()
+
     # Run this function in a dedicated thread to continously poll output from the qutest-process
     # Parse the data and scan for test results.
     def qutest_polling_loop(self):
-        click.secho("Starting polling of qutest...\n", fg='green')
+        click.secho("Starting polling of qutest...", fg='green')
         # Poll qutest output while the process is still alive.
         while self.qutest_process.poll() is None:
             #click.echo("Polling qutest...")
@@ -142,41 +154,40 @@ class CustomTestRunner(TestRunnerBase):
         return
 
 
+    def connect_mcu_serial(self, mcuSerialPort = "COM8", serBaud = 115200, tryTime_s = 15):
+        self.mcuSerPort = mcuSerialPort
+
+        startTime_ms  = time.time()
+
+        #logging.info("Try connecting to MCU over port %s ... within %d seconds..." , self.mcuSerPort, tryTime_s)
+        isSuccess = False
+        while(time.time() - startTime_ms < tryTime_s):
+            try:
+                self.mcuPort = serial.Serial(self.mcuSerPort, serBaud, timeout = 3)
+                #logging.warning("CONNECTED MCU PORT %s!", mcuSerialPort)
+                click.secho("CONNECTED MCU PORT {}!".format(mcuSerialPort))
+                isSuccess = True
+                break
+            except Exception:
+                isSuccess = False
+                time.sleep(0.25) # Wait 250 ms
+                pass
+
+        if (isSuccess == False):     
+            #logging.error("FAILED! NO MCU FOUND...")
+            sys.exit()
+
+        return isSuccess
+
     def send_to_MCU(self, bytes):
         try:
             self.serial.write(bytes)
             self.serial.flush()
+            click.secho("Sending data to MCU")
         except Exception as exc:
             if(self.options.verbose):
                 click.secho("Error sending data to MCU: {}".format(exc))
-                self.connect_mcu_serial()
-
-    def connect_mcu_serial(self):
-        # port = find_serial_port(
-        #     initial_port=self.get_test_port(),
-        #     board_config = self.platform.board_config(project_options["board"]),
-        #     upload_protocol=project_options.get("upload_protocol"),
-        #     ensure_ready=False)
-        port = "COM8"
-        baud = 115200
-
-        # try to (re)open the serial port. It should be closed after uploading the program.
-        startTime = time.perf_counter()
-        TIMEOUT = 10
-        while(time.perf_counter() - startTime <= TIMEOUT):
-            try:
-                if(self.options.verbose):
-                    click.secho("Attempting to open serial port: {}".format(port), fg='yellow')
-                self.serial = serial.Serial(port, baud, parity=serial.PARITY_NONE, timeout = 5)
-                if(self.options.verbose):
-                    click.secho("{} opened...".format(port), fg='green')
-                return True
-            except Exception as e:
-                if(self.options.verbose):
-                    click.secho("Could not access serial port: {}".format(port), fg='red')
-                sleep(1)
-        
-        return False
+            self.connect_mcu_serial()
 
     def run_Serial(self):
 
@@ -187,7 +198,29 @@ class CustomTestRunner(TestRunnerBase):
                 env=self.test_suite.env_name, as_dict=True
             )
 
-            isMCUConnected = self.connect_mcu_serial()
+            # port = find_serial_port(
+            #     initial_port=self.get_test_port(),
+            #     board_config = self.platform.board_config(project_options["board"]),
+            #     upload_protocol=project_options.get("upload_protocol"),
+            #     ensure_ready=False)
+            port = "COM8"
+            baud = 115200
+
+            # try to (re)open the serial port. It should be closed after uploading the program.
+            startTime = time.perf_counter()
+            TIMEOUT = 10
+            while(time.perf_counter() - startTime <= TIMEOUT):
+                try:
+                    if(self.options.verbose):
+                        click.secho("Attempting to open serial port: {}".format(port))
+                    self.serial = serial.Serial(port, baud, parity=serial.PARITY_NONE, timeout = 5)
+                    if(self.options.verbose):
+                        click.secho("{} opened...".format(port))
+                    break
+                except Exception as e:
+                    if(self.options.verbose):
+                        click.secho("Could not access serial port: {}".format(port), fg='red')
+                    sleep(1)
 
             # if serial could not be opened withit timeout, give up.
             if(self.serial is None):
@@ -197,9 +230,14 @@ class CustomTestRunner(TestRunnerBase):
             # Continously read serial output and send it to ourself.
             try:
                 while(self.isTesting):
-                    self.on_testing_data_output(self.serial.read(self.serial.in_waiting or 1))
-                    sys.stdout.flush()
-                    sleep(0.1)
+                    try:
+                        self.on_testing_data_output(self.serial.read(self.serial.in_waiting or 1))
+                        sys.stdout.flush()
+                        sleep(0.1)
+                    except:
+                        self.connect_mcu_serial()
+                        sleep(1)
+
             except Exception as exc:
                 if(self.options.verbose):
                     click.secho("Exception during serial monitoring: {}".format(exc))
@@ -207,7 +245,7 @@ class CustomTestRunner(TestRunnerBase):
 
 
 
-    def stage_testing(self):    
+    def stage_testing(self):
         # Pausing for a couple of seconds to let Teensy re-establish Serial connection.
         sleep(2)
         self.isTesting = True
@@ -220,33 +258,35 @@ class CustomTestRunner(TestRunnerBase):
         self.qspy_polling_thread = threading.Thread(group=None, name="qspyPollingThread", target=self.qspy_polling_loop)
         self.qspy_polling_thread.start()
 
-        sleep(1)
+        #sleep(2)
+        #self.start_qspyrelay()
+
+        sleep(2)
         self.start_qutest()
-        # # Start polling
-        self.qutest_polling_thread = threading.Thread(group=None, name="qutestPolling", target=self.qutest_polling_loop)
-        self.qutest_polling_thread.start()
 
         return self.run_Serial()
-        
+        # self.qutest_polling_thread.join()
+        # self.qspy_polling_thread.join()
+
+
+
 
     # This function is executed in a seperate thread and continously forwards commands
     # from QSpy to the MCU via the udp channel.
     def qspy_polling_loop(self):
 
-        click.secho("Starting polling of qspy... \n", fg='green')
+        click.secho("Starting polling of qspy...", fg='green')
         while self.qspy_process.poll() is None:
             try:
                 data = self.qspy_socket.recv(1024)
-            except Exception as e:
-                data = None
-                if(self.options.verbose):
-                    click.secho("Exception receiving data from Qspy socket: {}".format(e), fg='red')
-
-            if data is not None:     
-                if(self.options.verbose):
+                if(self.options.verbose > 2):
                     click.secho("QSPY->MCU: {}".format(data), fg='yellow')
                 self.send_to_MCU(data)
-            
+            except Exception as e:
+                if(self.options.verbose):
+                    click.secho("Exception sending data to MCU: {}".format(e), fg='red')
+                self.connect_mcu_serial()
+
         if (self.options.verbose):
             click.secho("Stopped polling QSpy. Return code: {}".format(self.qspy_process.returncode))
         outs, errs = self.qspy_process.communicate(timeout=15)
@@ -288,12 +328,4 @@ class CustomTestRunner(TestRunnerBase):
         else:
             click.secho("Close Q-SPY console to finalize the tests!", fg='yellow')
         
-        #self.qutest_polling_thread.join()
-
-        click.secho("Close Serial Port...!", fg='yellow')
-        self.qspy_process.stdin.write(b'\x1b')
-        self.qspy_process.kill()
-        self.qspy_polling_thread.join()
-        self.qspy_process.terminate()
-        self.serial.close()
         return super().teardown()
