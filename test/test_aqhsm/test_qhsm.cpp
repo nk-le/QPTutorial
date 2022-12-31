@@ -45,13 +45,16 @@ enum {
 };
 
 //----------------------------------------------------------------------------
-int main(int argc, char *argv[]) {
+void setup()
+{
+    Serial.begin(115200);
+
     static QF_MPOOL_EL(QEvt) smlPoolSto[10]; // small pool
 
     QF::init(); // initialize the framework and the underlying RT kernel
 
     // initialize the QS software tracing
-    Q_ALLEGE(QS_INIT(argc > 1 ? argv[1] : nullptr));
+    QS_INIT(nullptr);
 
     // initialize event pools...
     QF::poolInit(smlPoolSto, sizeof(smlPoolSto), sizeof(smlPoolSto[0]));
@@ -61,7 +64,11 @@ int main(int argc, char *argv[]) {
     QS_OBJ_DICTIONARY(the_hsm);
     QS_USR_DICTIONARY(BSP_DISPLAY);
 
-    return QF::run();
+    QF::run();
+}
+
+void loop(){
+
 }
 
 //----------------------------------------------------------------------------

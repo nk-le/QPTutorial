@@ -52,7 +52,7 @@ class CustomTestRunner(TestRunnerBase):
             click.secho("Found the following test files: {}".format(files), fg='green')
         fileListString = ' '.join(files)
         test_script_format = os.path.join(test_dir, test_name, "test*.py")
-        click.secho(test_script_format,  fg='green')
+
         # Find test scripts, run qutest and connect to the qspy process on the default port.  
         thisPath = os.path.dirname(os.path.realpath(__file__))
         qutest_path = os.path.join(thisPath, 'qutest.py') 
@@ -284,22 +284,23 @@ class CustomTestRunner(TestRunnerBase):
         # for test in self.test_suite.cases:
         #     test.
 
-        if self.test_suite.status is TestStatus.PASSED:
-            # send ESC to qspy to try to stop it.
-            self.qspy_process.stdin.write(b'\x1b')
-            self.qspy_process.kill()
-            self.qspy_polling_thread.join()
-            self.qspy_socket.close()
-            self.qspy_process.terminate()
-        else:
-            click.secho("Close Q-SPY console to finalize the tests!", fg='yellow')
-        
-        #self.qutest_polling_thread.join()
-
-        click.secho("Close Serial Port...!", fg='yellow')
         self.qspy_process.stdin.write(b'\x1b')
         self.qspy_process.kill()
         self.qspy_polling_thread.join()
         self.qspy_process.terminate()
-        self.serial.close()
+        self.serial.close() # Close the serial port for the next test uploading to mcu
+
+        if self.test_suite.status is TestStatus.PASSED:
+            # send ESC to qspy to try to stop it.
+            # self.qspy_process.stdin.write(b'\x1b')
+            # self.qspy_process.kill()
+            # self.qspy_polling_thread.join()
+            # self.qspy_socket.close()
+            # self.qspy_process.terminate()
+            pass
+        else:
+            click.secho("Close Q-SPY console to finalize the tests!", fg='yellow')
+        
+        #self.qutest_polling_thread.join()
+        
         return super().teardown()
