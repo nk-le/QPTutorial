@@ -1,10 +1,14 @@
 #include "qpcpp.hpp" // for QUTEST
 #include <Arduino.h>
 #include <Defines.h>
-#include <QPConfig.hpp>
 #include <bsp.hpp>
 
 #include <QDefines.h>
+
+// QP Project Configuration
+#include <QPConfig.hpp>
+#include <QVConfig.hpp>
+#include <QutestConfig.hpp>
 
 namespace QSPY_CONFIG{
     Stream& QS_PORT = QSPY_PORT;
@@ -58,4 +62,12 @@ void setup() {
 
 void loop(){
     QF::run(); // run the tests
+}
+
+static uint32_t myFun(void) {
+    QS_TEST_PROBE_DEF(&myFun)
+    QS_TEST_PROBE(
+        return qs_tp_;
+    )
+    return 0;
 }

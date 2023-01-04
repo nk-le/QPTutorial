@@ -40,8 +40,7 @@
 #include <Defines.h>
 
 #include <QPConfig.hpp>
-#include <QSPort.hpp>
-#include <QTestPort.hpp>
+#include <QutestConfig.hpp>
 
 namespace QSPY_CONFIG{
     Stream& QS_PORT = Serial;

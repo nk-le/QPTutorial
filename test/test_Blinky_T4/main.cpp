@@ -24,8 +24,7 @@
 #include <bsp.hpp>     // Board Support Package (BSP)
 
 #include <QPConfig.hpp>
-#include <QSPort.hpp>
-#include <QTestPort.hpp>
+#include <QutestConfig.hpp>
 
 
 using namespace QP;

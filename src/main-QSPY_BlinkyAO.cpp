@@ -2,14 +2,14 @@
 #include <Defines.h>
 
 #include <qpcpp.hpp>
-#include <QPConfig.hpp>
+
+#include <bsp.hpp>
+#include <blinky.hpp>
 
 // QP Project Configuration
-#include <bsp.hpp>
-#include <QVPort.hpp>
-#include <QSPort.hpp>
-// QP Active Object under Test
-#include <blinky.hpp>
+#include <QPConfig.hpp>
+#include <QVConfig.hpp>
+#include <QSpyConfig.hpp>
 
 using namespace QP;
 

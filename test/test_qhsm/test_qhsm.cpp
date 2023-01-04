@@ -36,8 +36,7 @@
 #include "qhsmtst.hpp"
 
 #include <QPConfig.hpp>
-#include <QSPort.hpp>
-#include <QTestPort.hpp>
+#include <QutestConfig.hpp>
 
 Q_DEFINE_THIS_FILE
 

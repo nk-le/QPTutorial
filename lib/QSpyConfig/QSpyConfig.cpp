@@ -1,15 +1,12 @@
 #include <qpcpp.hpp>
 #include "QDefines.h"
-#include <QSPort.hpp>
+#include <QSpyConfig.hpp>
 
 using namespace QP;
 using namespace QSPY_CONFIG;
 
 #ifdef Q_SPY
-
 namespace QP{
-
-    //static HardwareSerial QS_PORT = getQSPYSerial();
 
     void QP::QS::onReset(void) {
 
@@ -110,6 +107,8 @@ namespace QP{
         }
     #endif
 }
+
+#else 
 
 
 #endif

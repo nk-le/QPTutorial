@@ -1,13 +1,13 @@
 #include <qpcpp.hpp>
 #include <QDefines.h>
-#include <QTestPort.hpp>
+#include <QutestConfig.hpp>
 #ifdef Q_UTEST
 // #include <HardwareSerial.h>
 // extern HardwareSerial& QS_PORT;
 
     #warning "Compiling Q_UTEST Port ..."
-    #include <QTestPort.hpp>
-    #include <QSPort.hpp>
+    #include <QutestConfig.hpp>
+    #include <QSpyConfig.hpp>
 
     #define QP_IMPL        // this is QP implementation
     #include "qf_port.hpp" // QF port

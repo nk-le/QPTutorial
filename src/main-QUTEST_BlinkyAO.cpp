@@ -1,14 +1,14 @@
 #include <Arduino.h>
 #include <Defines.h>
-
 #include <qpcpp.hpp>
-#include <QPConfig.hpp>
+
+#include <bsp.hpp>
+#include <blinky.hpp>
 
 // QP Project Configuration
-#include <bsp.hpp>
-
-// QP Active Object under Test
-#include <blinky.hpp>
+#include <QPConfig.hpp>
+#include <QVConfig.hpp>
+#include <QutestConfig.hpp>
 
 using namespace QP;
 

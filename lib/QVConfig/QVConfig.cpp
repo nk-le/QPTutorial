@@ -1,7 +1,7 @@
 #include <qpcpp.hpp>
 #include "QDefines.h"
 #include <QPConfig.hpp>
-#include <QVPort.hpp>
+#include <QVConfig.hpp>
 
 using namespace QP;
 
