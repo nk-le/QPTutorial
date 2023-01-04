@@ -36,18 +36,71 @@ Using QP requires
     - Kernel: QV, QK, QX
     - - HArdware/Project specific: declared in include/ Folder
 
+    QP::QF::TICK_X(0, (void*)0);
+
+    void QF::onStartup(void);
+
+    #ifndef Q_UTEST
+    //........................................................
+        #ifndef Q_SPY
+            void QP::QV::onIdle(void) { // called with interrupts DISABLED
+            #ifdef NDEBUG
+                // Put the CPU and peripherals to the low-power mode. You might need to customize the clock management for your application, see the datasheet for your particular MCU.
+                QV_CPU_SLEEP();  // atomically go to sleep and enable interrupts
+            #else
+                QF_INT_ENABLE(); // simply re-enable interrupts
+            #endif
+            }
+        #endif
+
+        // ............................................................................
+        extern "C" Q_NORETURN Q_onAssert(char const * const module, int location) {
+            //
+            // NOTE: add here your application-specific error handling
+            //
+            (void)module;
+            (void)location;
+
+            QF_INT_DISABLE(); // disable all interrupts
+            for (;;) { // freeze in an endless loop for now...
+            }
+        }
+    #endif
+
   ## QSPY
     User should declare this function itself
-  void QS::onCommand(unsigned char cmdId,
+    void __attribute__((weak)) QS::onCommand(unsigned char cmdId,
 					unsigned long param1, unsigned long param2, unsigned long param3)
 
+    bool QS::onStartup(void const* arg);
 
+    void QS::onCleanup(void);
+
+    void QS::onFlush(void);
+
+    void __attribute__((weak)) QS::onCommand(unsigned char cmdId ,unsigned long param1, unsigned long param2, unsigned long param3)
+
+    QSTimeCtr QS::onGetTime(void);
+
+    #ifndef Q_UTEST
+    void QP::QV::onIdle(void); // Redeclare of QVConfig to flush the qspy records
+    #endif
 
   ## QUTEST
 
 
-  - Q_SPY
-  - Q_UTEST
+    void QS::onTestLoop();
+
+    void __attribute__((weak))  QS::onTestSetup(void);
+   
+    void __attribute__((weak)) QS::onTestTeardown(void);
+
+    void __attribute__((weak)) QS::onTestEvt(QEvt *e);
+
+    void __attribute__((weak)) QS::onTestPost(void const *sender, QActive *recipient, QEvt const *e, bool status);
+
+    void __attribute__((weak)) QP::QS::onCommand(uint8_t cmdId, uint32_t param1, uint32_t param2, uint32_t param3)
+
     - - Sidenote:
   - check library.json in <qp> folder.
   - The extra script is used to generate the build flags and compiling options
