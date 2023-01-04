@@ -38,11 +38,7 @@ static QP::QSpyId const l_TIMER_ID = { 0U }; // QSpy source ID
 //----------------------------------------------------------------------------
 // BSP functions
 enum {
-#ifdef Q_SPY
    LED = QS_USER
-#else 
-    LED = 0
-#endif
 };
 
 //............................................................................
@@ -51,7 +47,7 @@ void BSP::init(void) {
     // NOTE: interrupts are configured and started later in QF::onStartup()
 
 #ifdef Q_SPY
-    //QS_INIT(nullptr);
+    QS_INIT(nullptr);
 
     // output QS dictionaries...
     QS_OBJ_DICTIONARY(&l_TIMER_ID);
@@ -84,99 +80,3 @@ void BSP::ledOn(void) {
        QS_U8(1, 1);
     QS_END()
 }
-
-//----------------------------------------------------------------------------
-// QF callbacks...
-//
-// NOTE: The usual source of system clock tick in ARM Cortex-M (SysTick timer)
-// is aready used by the Arduino library. Therefore, this code uses a different
-// hardware Timer1 of the Teensy 4 board for providing the system clock tick.
-//
-// NOTE: You can re-define the macros to use a different ATSAM timer/channel.
-//
-// #include <TimerOne.h>  // Teensy Timer1 interface
-
-// #define TIMER1_CLCK_HZ  1000000
-// #define TIMER_HANDLER   T1_Handler
-
-// // interrupts.................................................................
-// void TIMER_HANDLER(void) {
-//     QF::TICK_X(0, &l_TIMER_ID); // process time events for tick rate 0
-// }
-// //............................................................................
-// void QF::onStartup(void) {
-//     // configure the timer-counter channel........
-//     Timer1.initialize(TIMER1_CLCK_HZ / BSP::TICKS_PER_SEC);
-//     Timer1.attachInterrupt(TIMER_HANDLER);
-//     // ...
-// }
-
-// #define QSPY_PORT Serial
-// #define QSPY_BAUD 0
-// bool QS::onStartup(void const* arg)
-// {
-//     // Initialize buffers holding incoming and outgoing QSPY messages.
-//     DMAMEM static uint8_t qsTxBuf[4096]; // Create the buffer used for the tracing
-//     DMAMEM static uint8_t qsRxBuf[128];
-
-//     QP::QS::initBuf(qsTxBuf, sizeof(qsTxBuf));
-//     QP::QS::rxInitBuf(qsRxBuf, sizeof(qsRxBuf));
-
-
-//     // Open port.
-//     if (!QSPY_PORT)	QSPY_PORT.begin(QSPY_BAUD);
-//     return true;
-// }
-
-// #ifndef Q_UTEST
-
-// //............................................................................
-// void QV::onIdle(void) { // called with interrupts DISABLED
-// #ifdef NDEBUG
-//     // Put the CPU and peripherals to the low-power mode. You might
-//     // need to customize the clock management for your application,
-//     // see the datasheet for your particular MCU.
-//     QV_CPU_SLEEP();  // atomically go to sleep and enable interrupts
-// #else
-//     QF_INT_ENABLE(); // simply re-enable interrupts
-
-// #ifdef Q_SPY
-
-//     // transmit QS outgoing data (QS-TX)
-//     uint16_t len = Serial.availableForWrite();
-//     if (len > 0U) { // any space available in the output buffer?
-//         uint8_t const *buf = QS::getBlock(&len);
-//         if (buf) {
-//             Serial.write(buf, len); // asynchronous and non-blocking
-//         }
-//     }
-
-//     // receive QS incoming data (QS-RX)
-//     len = Serial.available();
-//     if (len > 0U) {
-//         do {
-//             QP::QS::rxPut(Serial.read());
-//         } while (--len > 0U);
-//         QS::rxParse();
-//     }
-
-// #endif // QS_ON
-
-// #endif
-// }
-
-
-//............................................................................
-// extern "C" Q_NORETURN Q_onAssert(char const * const module, int location) {
-//     //
-//     // NOTE: add here your application-specific error handling
-//     //
-//     (void)module;
-//     (void)location;
-
-//     QF_INT_DISABLE(); // disable all interrupts
-//     BSP::ledOn();  // trun the LED on
-//     for (;;) { // freeze in an endless loop for now...
-//     }
-// }
-//#endif

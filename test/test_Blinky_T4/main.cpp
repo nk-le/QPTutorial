@@ -20,8 +20,8 @@
 //.$endhead${.::blinky_bsp-teensy4.ino} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #include <Arduino.h>
 #include "qpcpp.hpp"   // QP-C++ framework
-#include "blinky.hpp"  // Blinky application interface
-#include "bsp.hpp"     // Board Support Package (BSP)
+#include <blinky.hpp>  // Blinky application interface
+#include <bsp.hpp>     // Board Support Package (BSP)
 
 #include <QPConfig.hpp>
 #include <QSPort.hpp>
