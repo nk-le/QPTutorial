@@ -16,13 +16,14 @@ Project's structure
       [README](./README.md)
  
 Note: 
-  Environment
-  
-# Native arduino project
-  
-  
+  PlatformIO Environment
+
 
 # Integrate QP into the project
+  Link to book: file:///G:/Workspace/cuav/Documentation/PSiCC2.pdf
+
+  QP Website: ...
+
 Using QP requires
   - QP Source Code
 
@@ -67,6 +68,8 @@ Using QP requires
         }
     #endif
 
+  Examples: ...
+
   ## QSPY
     User should declare this function itself
     void __attribute__((weak)) QS::onCommand(unsigned char cmdId,
@@ -86,8 +89,10 @@ Using QP requires
     void QP::QV::onIdle(void); // Redeclare of QVConfig to flush the qspy records
     #endif
 
-  ## QUTEST
+  Examples: ...
+    QSPY_BlinkyAO
 
+  ## QUTEST
 
     void QS::onTestLoop();
 
@@ -101,24 +106,30 @@ Using QP requires
 
     void __attribute__((weak)) QP::QS::onCommand(uint8_t cmdId, uint32_t param1, uint32_t param2, uint32_t param3)
 
-    - - Sidenote:
-  - check library.json in <qp> folder.
+    Examples: ...
+      QUTEST_SelfTest
+      QUTEST_BlinkyAO
+      QUTEST_UARTSensor
+
+  ## Build Flags
+    PlatformIO or CMake
+
+    - Sidenote:
+    - check library.json in <qp> folder.
   - The extra script is used to generate the build flags and compiling options
 
-  Link to book: file:///G:/Workspace/cuav/Documentation/PSiCC2.pdf
 
- 1. Example: BlinkyAO
-  To integrate QP, we need to declar the follwing callback functions of QP
-    Q_onAssert()
-    QP::QF::onStartup()
-    QP::QV::onIdle()
 
-# Integrate Q_SPY into the project
 
-# Integrate Q_TEST into the project
+
 
 # Unit Testing
   - The blinky object
+
+  ## Explaination of the testing procedure
+
+  ## Testing ports 
+
 
   QRelay.py
 
