@@ -16,7 +16,7 @@ enum RecordID {
     LOG_TOPIC = QP::QSpyUserOffsets::QS_USER0,
     LOG_MISC_DATA_COLLECTION,
     #else
-    LOG_TOPIC = 105
+    LOG_TOPIC = 105,
     #endif
     LOG_MAX = 110
 };

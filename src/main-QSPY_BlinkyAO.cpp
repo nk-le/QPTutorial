@@ -6,7 +6,8 @@
 
 // QP Project Configuration
 #include <bsp.hpp>
-
+#include <QVPort.hpp>
+#include <QSPort.hpp>
 // QP Active Object under Test
 #include <blinky.hpp>
 
@@ -15,9 +16,13 @@ using namespace QP;
 Q_DEFINE_THIS_FILE
 
 //............................................................................
+namespace QSPY_CONFIG{
+    Stream& QS_PORT = Serial;
+    int QS_BAUD = 115200;
+};
+
 void setup() {
-    Serial.begin(0);
-    QSPY_PORT.begin(QSPY_BAUD);
+    Serial.begin(QSPY_CONFIG::QS_BAUD);
 
     // init framework
     QPConfig::init();
@@ -25,9 +30,6 @@ void setup() {
 
     // dictionaries...
     QS_SIG_DICTIONARY(TIMEOUT_SIG, nullptr);
-
-    // pause execution of the test and wait for the test script to continue
-    QS_TEST_PAUSE();
 
     // initialize event pools...
     // start the active objects...
@@ -42,8 +44,3 @@ void loop(){
     QF::run();
 }
 
-namespace QSPY_CONFIG{
-    //HardwareSerial & getQSPYSerial();
-    HardwareSerial& QS_PORT = QSPY_PORT;
-    int QS_BAUD = QSPY_BAUD;
-};

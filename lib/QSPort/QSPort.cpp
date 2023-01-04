@@ -54,21 +54,21 @@ namespace QP{
 		QS_PORT.flush(); // wait for the transmission of outgoing data to complete
 	}
 
-	// void QS::onCommand(unsigned char cmdId,
-	// 				unsigned long param1, unsigned long param2, unsigned long param3)
-	// 	{
-	// 	(void)param1;
-	// 	(void)param2;
-	// 	(void)param3;
+	void __attribute__((weak)) QS::onCommand(unsigned char cmdId,
+					unsigned long param1, unsigned long param2, unsigned long param3)
+	{
+	(void)param1;
+	(void)param2;
+	(void)param3;
 
-	// 	switch (cmdId) {
-	// 		case 0U: {
-	// 			break;
-	// 		}
-	// 		default:
-	// 			break;
-	// 		}
-	// 	}
+	switch (cmdId) {
+		case 0U: {
+			break;
+		}
+		default:
+			break;
+		}
+	}
 
 	#ifndef Q_UTEST
     //............................................................................

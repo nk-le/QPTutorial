@@ -36,6 +36,17 @@
 //! @endcond
 
 #include "qpcpp.hpp" // for QUTEST
+#include <Arduino.h>
+#include <Defines.h>
+
+#include <QPConfig.hpp>
+#include <QSPort.hpp>
+#include <QTestPort.hpp>
+
+namespace QSPY_CONFIG{
+    Stream& QS_PORT = Serial;
+    int QS_BAUD = 115200;
+};
 
 using namespace QP;
 
@@ -55,15 +66,28 @@ enum {
     COMMAND_Z,
     MY_RECORD,
 };
+  
+void setup() {
+    
+    Serial.begin(115200);
 
-//----------------------------------------------------------------------------
-int main(int argc, char *argv[]) {
+    // Wait for USB-port to reconnect.
+    auto startTime = millis();
+    auto lastState = LOW;
+    auto nextState = LOW;
+    // Start-up blink
+    while (millis() - startTime < 1000) {
+        delay(200);
 
-    QF::init();  // initialize the framework
+        lastState == LOW ? nextState = HIGH : nextState = LOW;
 
-    // initialize the QS software tracing
-    Q_ALLEGE(QS_INIT(argc > 1 ? argv[1] : nullptr));
+        digitalWrite(LED_BUILTIN, nextState);
+        lastState = nextState;
+    }
 
+    // init framework
+    QPConfig::init();
+    
     // global filter
     QS_GLB_FILTER(QP::QS_ALL_RECORDS); // enable all QS records
 
@@ -80,10 +104,13 @@ int main(int argc, char *argv[]) {
     QS_USR_DICTIONARY(COMMAND_Z);
     QS_USR_DICTIONARY(MY_RECORD);
 
-    return QF::run(); // run the tests
+        
 }
 
-//............................................................................
+void loop(){
+        QF::run(); // run the tests
+}
+// //............................................................................
 void QS::onTestSetup(void) {
     QS_BEGIN_ID(FIXTURE_SETUP, 0U)
     QS_END()
@@ -152,24 +179,6 @@ void QS::onCommand(std::uint8_t cmdId,
     }
 }
 
-//............................................................................
-// callback function to "massage" the event, if necessary
-void QS::onTestEvt(QEvt *e) {
-    (void)e;
-#ifdef Q_HOST  // is this test compiled for a desktop Host computer?
-#else // this test is compiled for an embedded Target system
-#endif
-}
-//............................................................................
-// callback function to output the posted QP events (not used here)
-void QS::onTestPost(void const *sender, QActive *recipient,
-                    QEvt const *e, bool status)
-{
-    (void)sender;
-    (void)recipient;
-    (void)e;
-    (void)status;
-}
 
 //----------------------------------------------------------------------------
 static uint32_t myFun(void) {

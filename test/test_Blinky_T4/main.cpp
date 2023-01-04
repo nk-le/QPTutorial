@@ -40,7 +40,7 @@ void setup() {
     auto nextState = LOW;
 
     // Start-up blink
-    while (millis() - startTime < 3000) {
+    while (millis() - startTime < 1000) {
         delay(200);
 
         lastState == LOW ? nextState = HIGH : nextState = LOW;

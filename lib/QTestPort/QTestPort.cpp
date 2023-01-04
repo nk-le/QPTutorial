@@ -54,17 +54,17 @@
         rxPriv_.inTestLoop = true;
     }
 
-    // void QS::onTestSetup(void) {
-    // }
+    void __attribute__((weak))  QS::onTestSetup(void) {
+    }
     
-    // //............................................................................
-    // void QS::onTestTeardown(void) {
-    // }
+    //............................................................................
+    void __attribute__((weak)) QS::onTestTeardown(void) {
+    }
     //............................................................................
 
     //............................................................................
     // callback function to "massage" the event, if necessary
-    void QS::onTestEvt(QEvt *e) {
+    void __attribute__((weak)) QS::onTestEvt(QEvt *e) {
     (void)e;
         #ifdef Q_HOST  // is this test compiled for a desktop Host computer?
         #else // this test is compiled for an embedded Target system
@@ -72,7 +72,7 @@
     }
     //............................................................................
     // callback function to output the posted QP events (not used here)
-    void QS::onTestPost(void const *sender, QActive *recipient,
+    void __attribute__((weak)) QS::onTestPost(void const *sender, QActive *recipient,
             QEvt const *e, bool status)
     {
         (void)sender;
@@ -82,11 +82,11 @@
     }
 
     //............................................................................
-    // void QP::QS::onCommand(uint8_t cmdId, uint32_t param1,
-    //                     uint32_t param2, uint32_t param3)
-    // {
-    //     //QS_PORT.printf("Command %d received.\n", cmdId);
-    // }
+    void __attribute__((weak)) QP::QS::onCommand(uint8_t cmdId, uint32_t param1,
+                        uint32_t param2, uint32_t param3)
+    {
+
+    }
 
 #else
 
