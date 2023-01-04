@@ -35,6 +35,10 @@
 #include "qpcpp.hpp"
 #include "qhsmtst.hpp"
 
+#include <QPConfig.hpp>
+#include <QSPort.hpp>
+#include <QTestPort.hpp>
+
 Q_DEFINE_THIS_FILE
 
 using namespace QP;

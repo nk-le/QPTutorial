@@ -23,11 +23,16 @@
 #include "blinky.hpp"  // Blinky application interface
 #include "bsp.hpp"     // Board Support Package (BSP)
 
+#include <QPConfig.hpp>
+#include <QSPort.hpp>
+#include <QTestPort.hpp>
+
 
 using namespace QP;
 
 //............................................................................
 void setup() {
+    Serial.begin(115200);
 
     // Wait for USB-port to reconnect.
     auto startTime = millis();
