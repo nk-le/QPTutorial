@@ -27,6 +27,10 @@ Note:
 Using QP requires
   - QP Source Code
 
+  - Installation of QTools
+
+  - Add to Path
+
   * - 2 ways to connect the QP Library:
     - 1. Clone the QP repo into the <lib/> of the project
     - 2. Clone the QP repo anywhere and configure the path in platformio.ini file of the project:
@@ -159,13 +163,13 @@ Using QP requires
 
 
 TODO:
-  Unstable testing. The test results are not 100% deterministic
-  Connection of CustomTestRunner must be reworked --> Sometimes we observe that the com port of teensy does not reconnect
-  COM port is still hard coded. Is there anyway to regconize the port automatically?
-  Rework the flag adjustment of QP librariey dependencies
-  Integrate automated document generation
+  - [ ] Unstable testing. The test results are not 100% deterministic
+  - [ ] Connection of CustomTestRunner must be reworked --> Sometimes we observe that the com port of teensy does not reconnect
+  - [x] COM port is still hard coded. Is there anyway to regconize the port automatically?
+  - [ ] Rework the flag adjustment of QP librariey dependencies
+  - [ ]Integrate automated document generation
 
 Further improvement
-  Remote cheking before merging --> setup CI pipeline
-  Add unittest for the designed modules  
+  - [ ] Remote cheking before merging --> setup CI pipeline
+  - [ ] Add unittest for the designed modules  
 

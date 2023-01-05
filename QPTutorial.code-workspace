@@ -3,6 +3,9 @@
 		{
 			"name": "QPTutorial",
 			"path": "."
+		},
+		{
+			"path": "../Dependencies/qp"
 		}
 	],
 	"settings": {

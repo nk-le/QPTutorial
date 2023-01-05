@@ -4,7 +4,7 @@ from logging import captureWarnings
 from os import popen
 from platformio.public import TestRunnerBase
 from platformio.test.result import TestCase, TestCaseSource, TestStatus
-#from platformio.device.finder import find_serial_port
+from platformio.device.finder import SerialPortFinder, find_mbed_disk, is_pattern_port
 from platformio.util import strip_ansi_codes
 import serial
 import click
@@ -158,13 +158,12 @@ class CustomTestRunner(TestRunnerBase):
                 self.connect_mcu_serial()
 
     def connect_mcu_serial(self):
-        # port = find_serial_port(
-        #     initial_port=self.get_test_port(),
-        #     board_config = self.platform.board_config(project_options["board"]),
-        #     upload_protocol=project_options.get("upload_protocol"),
-        #     ensure_ready=False)
-        port = "COM8"
-        baud = 115200
+        # Check this out 
+        # https://github.com/platformio/platformio-core/blob/develop/platformio/test/runners/base.py
+        initialPort = self.get_test_port()
+        port = SerialPortFinder().find(initial_port=self.get_test_port())
+        baud = self.project_config.get(
+            f"env:{self.test_suite.env_name}", "monitor_speed")
 
         # try to (re)open the serial port. It should be closed after uploading the program.
         startTime = time.perf_counter()
