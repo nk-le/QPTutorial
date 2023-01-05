@@ -167,7 +167,8 @@ TODO:
   - [ ] Connection of CustomTestRunner must be reworked --> Sometimes we observe that the com port of teensy does not reconnect
   - [x] COM port is still hard coded. Is there anyway to regconize the port automatically?
   - [ ] Rework the flag adjustment of QP librariey dependencies
-  - [ ]Integrate automated document generation
+  - [ ] Integrate automated document generation
+  - [ ] Check port clean up after testing/ reconnect port/ etc.
 
 Further improvement
   - [ ] Remote cheking before merging --> setup CI pipeline

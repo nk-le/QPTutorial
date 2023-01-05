@@ -217,17 +217,12 @@ class CustomTestRunner(TestRunnerBase):
         sleep(2)
         self.isTesting = True
 
-        # self.serialThread = threading.Thread(target=self.run_Serial)
-        # self.serialThread.start()
-        sleep(0.1)
-
         self.start_qspy()
         self.qspy_polling_thread = threading.Thread(group=None, name="qspyPollingThread", target=self.qspy_polling_loop)
         self.qspy_polling_thread.start()
 
         sleep(1)
         self.start_qutest()
-        # # Start polling
         self.qutest_polling_thread = threading.Thread(group=None, name="qutestPolling", target=self.qutest_polling_loop)
         self.qutest_polling_thread.start()
 
