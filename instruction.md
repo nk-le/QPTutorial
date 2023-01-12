@@ -290,6 +290,38 @@ Example:
 
 #### 
 
+	cuav/
+	├── CCU (Command Control Unit)/
+	│   ├── lib/
+	│   │   ├── MCU (Mission Computer Unit)/
+	│   │   │   ├── lib/
+	│   │   │   └── src/  
+	│   │   ├── NAVComputer/              /* Guidance */
+	│   │   ├── FlightComputer/           /* FC High Level Commanders */
+	│   │   ├── FlightController.git/     /* Flight Controller: PID, Mixer, PID Profiles, etc. */
+	│   │   └── TargetObserver/           /* Compute Target */
+	│   └── src/
+	│       └── main.cpp                  /* Main programm of CUAV */
+	├── SFU (Sensor Fusion Unit)/
+	│   ├── lib/
+	│   │   └── DroneSensors.git/          /* Specific Sensor Drivers */       
+	│   └── src/
+	├── TCU (Target Computer Unit)/
+	│   ├── lib/
+	│   │   └── TargetComputer.git/    
+	│   └── src/
+	└── Common/
+		├── MathCore.git/
+		├── DroneAPI.git/
+		├── InterSystemMessages.git/
+		├── DroneLogger.git/
+		├── AMDCDrivers.git/            /* Plain Drivers, e.g., sensor drivers, mixer drivers, etc. */
+		├── QPDrivers.git/              /* QP Drivers, e.g., QP sensors QP SerialParser, QP EthernetParser, etc. */
+		└── CustomTeensyCore.git/       /* Enhanced Serial, I2C, SPI, Core,... libraries for MCU */
+	LIB_DEPS/
+	└── ReleasedLibraries/              /* External Libraries */    
+		├── QP/
+		└── Eigen/
 
 
 ### Subprojects
