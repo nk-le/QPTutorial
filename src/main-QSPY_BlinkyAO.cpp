@@ -3,8 +3,8 @@
 
 #include <qpcpp.hpp>
 
-#include <bsp.hpp>
-#include <blinky.hpp>
+//#include <bsp.hpp>
+//#include <blinky.hpp>
 
 // QP Project Configuration
 #include <QPConfig.hpp>
@@ -26,17 +26,17 @@ void setup() {
 
     // init framework
     QPConfig::init();
-    BSP::init();
+    //BSP::init();
 
     // dictionaries...
-    QS_SIG_DICTIONARY(TIMEOUT_SIG, nullptr);
+    // QS_SIG_DICTIONARY(TIMEOUT_SIG, nullptr);
 
     // initialize event pools...
     // start the active objects...
     static QEvt const *blinkyQSto[10]; // event queue storage for Blinky
-    AO_Blinky->start(1U,
-                     blinkyQSto, Q_DIM(blinkyQSto),
-                     nullptr, 0U, (QEvt *)0);
+    // AO_Blinky->start(1U,
+    //                  blinkyQSto, Q_DIM(blinkyQSto),
+    //                  nullptr, 0U, (QEvt *)0);
 
 }
 

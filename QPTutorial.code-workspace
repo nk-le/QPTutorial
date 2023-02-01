@@ -5,7 +5,7 @@
 			"path": "."
 		},
 		{
-			"path": "../Dependencies/qp"
+			"path": "../subprojects/qp"
 		}
 	],
 	"settings": {
