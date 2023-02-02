@@ -15,11 +15,13 @@ extern QP::QActive * const AO_AMDCBlinky;
 
 /// Maximal size message that QP Memory pool can handle
 struct MediumType{
-    uint8_t dummy[200];
+    uint8_t dummy[15];
 };
 
 //............................................................................
 void setup() {
+    pinMode(LED_BUILTIN, OUTPUT);
+
     // Init port used for qspy
     Serial.begin(115200);
     // Initialize framework

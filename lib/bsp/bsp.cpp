@@ -29,7 +29,7 @@ using namespace QP;
 static QP::QSpyId const l_TIMER_ID = { 0U }; // QSpy source ID
 
 struct DefaultType{
-    uint8_t dummy[50];
+    uint8_t dummy[10];
 };
 
 //----------------------------------------------------------------------------
@@ -64,6 +64,8 @@ void BSP::init(){
 	// Initialize event pools... Attention: this has to be called AFTER QS_INIT
 	DMAMEM static QF_MPOOL_EL(DefaultType) smlPoolSto[100];
 	QP::QF::poolInit(smlPoolSto, sizeof(smlPoolSto), sizeof(smlPoolSto[0]));
+
+	pinMode(LED_BUILTIN, OUTPUT);
 }
 //............................................................................
 void BSP::ledOff(void) {
