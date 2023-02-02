@@ -32,11 +32,11 @@
 //============================================================================
 
 #include <Arduino.h>
+#include <ArduinoLog.h>
 #include "qpcpp.hpp"
 #include "qhsmtst.hpp"
 
-#include <QPConfig.hpp>
-#include <QutestConfig.hpp>
+#include <QPT4Config/BoardConfig.hpp> // Import QP Configuration
 
 Q_DEFINE_THIS_FILE
 

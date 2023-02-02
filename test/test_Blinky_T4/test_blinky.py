@@ -11,7 +11,7 @@ def on_reset():
     expect("===RTC===> St-Entry Obj=Blinky::inst,State=Blinky::off")
     expect("@timestamp Init===> Obj=Blinky::inst,State=Blinky::off")
     expect_run()
-    #current_obj(OBJ_SM_AO,"Blinky::inst")
+    current_obj(OBJ_SM_AO,"Blinky::inst")
     current_obj(OBJ_TE,"Blinky::inst.m_timeEvt")
 
 test("TIMEOUT_SIG->Blinky::inst")

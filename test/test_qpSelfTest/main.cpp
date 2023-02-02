@@ -35,17 +35,10 @@
 //============================================================================
 //! @endcond
 
-#include "qpcpp.hpp" // for QUTEST
 #include <Arduino.h>
-#include <Defines.h>
-
-#include <QPConfig.hpp>
-#include <QutestConfig.hpp>
-
-namespace QSPY_CONFIG{
-    Stream& QS_PORT = Serial;
-    int QS_BAUD = 115200;
-};
+#include <ArduinoLog.h>
+#include <qpcpp.hpp> // Import QP Framework
+#include <QPT4Config/BoardConfig.hpp> // Import QP Configuration
 
 using namespace QP;
 
@@ -85,7 +78,7 @@ void setup() {
     }
 
     // init framework
-    QPConfig::init();
+    BoardConfig::init();
     
     // global filter
     QS_GLB_FILTER(QP::QS_ALL_RECORDS); // enable all QS records
@@ -101,14 +94,16 @@ void setup() {
     QS_USR_DICTIONARY(COMMAND_X);
     QS_USR_DICTIONARY(COMMAND_Y);
     QS_USR_DICTIONARY(COMMAND_Z);
-    QS_USR_DICTIONARY(MY_RECORD);
-
-        
+    QS_USR_DICTIONARY(MY_RECORD);        
 }
 
 void loop(){
-        QF::run(); // run the tests
+    QF::run(); // run the tests
 }
+
+
+            //////////////////// OVERIDING /////////////////////////
+
 // //............................................................................
 void QS::onTestSetup(void) {
     QS_BEGIN_ID(FIXTURE_SETUP, 0U)

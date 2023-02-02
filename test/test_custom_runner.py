@@ -278,19 +278,19 @@ class CustomTestRunner(TestRunnerBase):
         # for test in self.test_suite.cases:
         #     test.
 
-        self.qspy_process.stdin.write(b'\x1b')
-        self.qspy_process.kill()
-        self.qspy_polling_thread.join()
-        self.qspy_process.terminate()
-        self.serial.close() # Close the serial port for the next test uploading to mcu
+        # self.qspy_process.stdin.write(b'\x1b')
+        # self.qspy_process.kill()
+        # self.qspy_polling_thread.join()
+        # self.qspy_process.terminate()
+        # self.serial.close() # Close the serial port for the next test uploading to mcu
 
-        if self.test_suite.status is TestStatus.PASSED:
+        if self.test_suite.status is TestStatus.PASSED or TestStatus.SKIPPED:
             # send ESC to qspy to try to stop it.
-            # self.qspy_process.stdin.write(b'\x1b')
-            # self.qspy_process.kill()
-            # self.qspy_polling_thread.join()
-            # self.qspy_socket.close()
-            # self.qspy_process.terminate()
+            self.qspy_process.stdin.write(b'\x1b')
+            self.qspy_process.kill()
+            self.qspy_polling_thread.join()
+            self.qspy_socket.close()
+            self.qspy_process.terminate()
             pass
         else:
             click.secho("Close Q-SPY console to finalize the tests!", fg='yellow')

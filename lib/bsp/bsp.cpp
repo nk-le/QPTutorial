@@ -24,59 +24,60 @@
 #ifdef Q_SPY
     #include <qs.hpp>
 #endif
-
 using namespace QP;
 
-//----------------------------------------------------------------------------
-// QS facilities
-
-// un-comment if QS instrumentation needed
-//#define QS_ON
-
 static QP::QSpyId const l_TIMER_ID = { 0U }; // QSpy source ID
+
+struct DefaultType{
+    uint8_t dummy[50];
+};
 
 //----------------------------------------------------------------------------
 // BSP functions
 enum {
-   LED = QS_USER
+   LED = 100
 };
 
-//............................................................................
-void BSP::init(void) {
-    // initialize the hardware used in this sketch...
-    // NOTE: interrupts are configured and started later in QF::onStartup()
+void BSP::init(){
+    // Initialize framework
+	QP::QF::init();
+	
+	#ifdef Q_SPY
+		QS_INIT(nullptr);
+		// setup the QS filters...
+		QS_GLB_FILTER(QP::QS_SM_RECORDS); // state machine records
+		QS_GLB_FILTER(QP::QS_AO_RECORDS); // active object records
+		QS_GLB_FILTER(QP::QS_UA_RECORDS); // all user records
 
-#ifdef Q_SPY
-    QS_INIT(nullptr);
+		// Add HSM top state.
+		QS_FUN_DICTIONARY(&QHsm::top);
+        // QS_USR_DICTIONARY(LED);
+	#endif
 
-    // output QS dictionaries...
-    QS_OBJ_DICTIONARY(&l_TIMER_ID);
-    QS_FUN_DICTIONARY(&ledOff);
-    QS_FUN_DICTIONARY(&ledOn);   
+    // Configure serial port before assigning to QP 
+    Serial.begin(115200);
 
-    // setup the QS filters...
-    QS_GLB_FILTER(QP::QS_SM_RECORDS); // state machine records
-    QS_GLB_FILTER(QP::QS_AO_RECORDS); // active object records
-    QS_GLB_FILTER(QP::QS_UA_RECORDS); // all user records
-#endif
+	// Initialize publish-subscribe system
+	static QP::QSubscrList subscrSto[MAX_SIG];
+	QF::psInit(subscrSto, Q_DIM(subscrSto));// Override the initialization
 
-    QS_FUN_DICTIONARY(&QHsm::top);
-    QS_USR_DICTIONARY(LED);
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, HIGH);
-
+	// Initialize event pools... Attention: this has to be called AFTER QS_INIT
+	DMAMEM static QF_MPOOL_EL(DefaultType) smlPoolSto[100];
+	QP::QF::poolInit(smlPoolSto, sizeof(smlPoolSto), sizeof(smlPoolSto[0]));
 }
 //............................................................................
 void BSP::ledOff(void) {
-    digitalWrite(LED_BUILTIN, LOW);
+    digitalWriteFast(LED_BUILTIN, LOW);
     QS_BEGIN_ID(LED, AO_Blinky->m_prio)
-       QS_U8(1, 0);
+		QS_STR("LED OFF");
+       //QS_U8(1, 0);
     QS_END()
 }
 //............................................................................
 void BSP::ledOn(void) {
-    digitalWrite(LED_BUILTIN, HIGH);
+    digitalWriteFast(LED_BUILTIN, HIGH);
     QS_BEGIN_ID(LED, AO_Blinky->m_prio)
-       QS_U8(1, 1);
+       QS_STR("LED ON");
     QS_END()
 }
+

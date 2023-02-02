@@ -33,14 +33,13 @@
 //============================================================================
 #ifndef BSP_HPP
 #define BSP_HPP
-#include <QPConfig.hpp>
-
-using namespace QPConfig;
+#include <QPT4Config/BoardConfig.hpp>
+#include <assert.h>
 
 // a very simple Board Support Package (BSP) -----========--------------------
 class BSP {
 public:
-    enum { TICKS_PER_SEC = QPConfig::TICKS_PER_SECOND} ;
+    enum { TICKS_PER_SEC = QP_RATE} ;
     static void init(void);
     static void ledOff(void);
     static void ledOn(void);
@@ -49,4 +48,15 @@ public:
 // active object(s) used in this application -------------------------------
 extern QP::QActive * const AO_Blinky; // opaque pointer to the Blinky AO
 
+enum AMDCRecords {
+    #ifdef Q_SPY
+        INFO = QP::QSpyUserOffsets::QS_USER0,
+    #else 
+        INFO = 100,
+    #endif
+    WARNING,
+    TESTING,
+    ERROR,
+    LOG_MAX = 124
+};
 #endif // BSP_HPP
